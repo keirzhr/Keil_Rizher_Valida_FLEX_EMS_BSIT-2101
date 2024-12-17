@@ -494,7 +494,7 @@ def on_enter(entry, default_text):
 
 # Main Login Window
 root = Tk()
-root.title('Registration System')
+root.title('FLEX EMS: Registration')
 root.geometry('1080x650+250+110')
 root.configure(bg="#1A1A19")
 root.resizable(False, False)
