@@ -61,22 +61,12 @@ class EventManagementSystem:
         ]
 
         for btn_text, btn_command in nav_buttons:
-            btn = tk.Button(
-                nav_frame, 
-                text=btn_text, 
-                command=btn_command, 
-                bg="#2980B9", 
-                fg="white", 
-                font=("Arial", 10, "bold"),
-                relief=tk.FLAT
-            )
+            btn = tk.Button(nav_frame, text=btn_text, command=btn_command, bg="#2980B9", fg="white", font=("Arial", 10, "bold"),relief=tk.FLAT)
             btn.pack(side=tk.LEFT, padx=10, pady=5)
 
         # Content Frame
         self.content_frame = tk.Frame(self.root, bg="#6EC207")
         self.content_frame.pack(fill=tk.BOTH, expand=True)
-
-        # Initially show browse events
         self.show_browse_events()
 
     def show_browse_events(self):
@@ -86,30 +76,20 @@ class EventManagementSystem:
         browse_frame = tk.Frame(self.content_frame, bg="#6EC207")
         browse_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
 
-        # Search and Filter Frame
+        # Search 
         search_frame = tk.Frame(browse_frame, bg="#6EC207")
         search_frame.pack(fill=tk.X, pady=10)
 
-        tk.Label(search_frame, text="Search Events:", 
-                 bg="#6EC207", 
-                 fg="white", 
-                 font=("Arial", 10)).pack(side=tk.LEFT, padx=5)
+        tk.Label(search_frame, text="Search Events:", bg="#6EC207", fg="white", font=("Arial", 10)).pack(side=tk.LEFT, padx=5)
 
         search_var = tk.StringVar()
-        search_entry = tk.Entry(search_frame, 
-                                textvariable=search_var, 
-                                width=30, 
-                                bg="#34495E", 
-                                fg="white")
+        search_entry = tk.Entry(search_frame, textvariable=search_var, width=30, bg="#34495E", fg="white")
         search_entry.pack(side=tk.LEFT, padx=5)
 
         # Event Type Dropdown
         event_types = ["All", "Conference", "Concert", "Workshop", "Seminar"]
         event_type_var = tk.StringVar(value="All")
-        event_type_dropdown = ttk.Combobox(search_frame, 
-                                           textvariable=event_type_var, 
-                                           values=event_types, 
-                                           width=15)
+        event_type_dropdown = ttk.Combobox(search_frame, textvariable=event_type_var, values=event_types, width=15)
         event_type_dropdown.pack(side=tk.LEFT, padx=5)
 
         # Treeview for Events
@@ -134,27 +114,24 @@ class EventManagementSystem:
                         WHERE event_date >= CURRENT_DATE()
                     """
                     
-                    # Modify parameter handling
                     conditions = []
                     params = []
 
-                    # Add search term filter
+                    # Add search
                     if search_term:
                         conditions.append("(event_name LIKE %s OR location LIKE %s)")
                         params.extend([f"%{search_term}%", f"%{search_term}%"])
 
-                    # Add event type filter
+                    # Add event
                     if event_type != "All":
                         conditions.append("event_type = %s")
                         params.append(event_type)
-
-                    # Combine conditions
+                        
                     if conditions:
                         query += " AND " + " AND ".join(conditions)
 
                     cursor.execute(query, params)
-
-                    # Rest of the method remains the same
+                    
                     for item in tree.get_children():
                         tree.delete(item)
 
@@ -165,26 +142,13 @@ class EventManagementSystem:
                 except Exception as e:
                     messagebox.showerror("Error", f"Failed to load events: {e}")
         # Search button
-        search_button = tk.Button(
-            search_frame, 
-            text="Search", 
-            command=lambda: load_events(search_var.get(), event_type_var.get()), 
-            bg="#2980B9", 
-            fg="white"
-        )
+        search_button = tk.Button(search_frame, text="Search", command=lambda: load_events(search_var.get(), event_type_var.get()), bg="#2980B9", fg="white")
         search_button.pack(side=tk.LEFT, padx=5)
 
         # Register button
-        register_button = tk.Button(
-            browse_frame, 
-            text="Register for Selected Event", 
-            command=lambda: self.register_for_event(tree), 
-            bg="#2980B9", 
-            fg="white"
-        )
+        register_button = tk.Button(browse_frame, text="Register for Selected Event", command=lambda: self.register_for_event(tree), bg="#2980B9", fg="white")
         register_button.pack(pady=10)
-
-        # Initial load of events
+        
         load_events()
 
     def register_for_event(self, tree):
@@ -208,10 +172,7 @@ class EventManagementSystem:
         reg_window.geometry("400x500")
         reg_window.configure(bg="#6EC207")
 
-        tk.Label(reg_window, text="Event Registration", 
-                font=("Arial", 16, "bold"), 
-                bg="#6EC207", 
-                fg="#ECF0F1").pack(pady=10)
+        tk.Label(reg_window, text="Event Registration", font=("Arial", 16, "bold"), bg="#6EC207", fg="#ECF0F1").pack(pady=10)
 
         # Registration Fields
         fields = {
@@ -228,21 +189,13 @@ class EventManagementSystem:
             frame = tk.Frame(reg_window, bg="#6EC207")
             frame.pack(pady=5, padx=20, fill=tk.X)
 
-            tk.Label(frame, text=f"{field_name}:", 
-                    bg="#6EC207", 
-                    fg="white").pack(side=tk.LEFT)
+            tk.Label(frame, text=f"{field_name}:", bg="#6EC207", fg="white").pack(side=tk.LEFT)
 
-            entry = tk.Entry(frame, 
-                            textvariable=field_var, 
-                            bg="#34495E", 
-                            fg="white", 
-                            width=30)
+            entry = tk.Entry(frame, textvariable=field_var, bg="#34495E", fg="white", width=30)
             entry.pack(side=tk.RIGHT)
 
         # Ticket ID Display
-        tk.Label(reg_window, text=f"Ticket ID: {ticket_id}", 
-                bg="#6EC207", 
-                fg="white").pack(pady=10)
+        tk.Label(reg_window, text=f"Ticket ID: {ticket_id}", bg="#6EC207", fg="white").pack(pady=10)
 
         def submit_registration():
             # Validate inputs
@@ -251,7 +204,6 @@ class EventManagementSystem:
                     messagebox.showerror("Error", f"{field} is required")
                     return
 
-            # Database registration
             try:
                 connection = self.create_connection()
                 if not connection:
@@ -260,7 +212,6 @@ class EventManagementSystem:
 
                 cursor = connection.cursor()
                 
-                # Check if already registered
                 cursor.execute("""
                     SELECT COUNT(*) FROM Attendees 
                     WHERE email = %s AND event_id = %s
@@ -272,7 +223,6 @@ class EventManagementSystem:
                     connection.close()
                     return
 
-                # Proceed with registration
                 cursor.execute("""
                     INSERT INTO Attendees 
                     (name, email, event_id, attendee_phone, attendee_address, ticket_id) 
@@ -323,7 +273,6 @@ class EventManagementSystem:
                 bg="#2980B9", 
                 fg="white").pack(pady=10)
     def show_attendee_profile(self):
-        # Clear previous content
         for widget in self.content_frame.winfo_children():
             widget.destroy()
 
@@ -332,11 +281,7 @@ class EventManagementSystem:
         profile_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
 
         # Profile Title
-        tk.Label(profile_frame, 
-                text="Attendee Profile", 
-                font=("Arial", 16, "bold"), 
-                bg="#6EC207", 
-                fg="#6EC207").pack(pady=10)
+        tk.Label(profile_frame, text="Attendee Profile", font=("Arial", 16, "bold"), bg="#6EC207", fg="#6EC207").pack(pady=10)
 
         # Profile Fields
         profile_fields = {
@@ -372,25 +317,15 @@ class EventManagementSystem:
             frame = tk.Frame(profile_frame, bg="#6EC207")
             frame.pack(pady=5, padx=20, fill=tk.X)
 
-            tk.Label(frame, 
-                    text=f"{field_name}:", 
-                    bg="#6EC207", 
-                    fg="white", 
-                    font=("Arial", 10)).pack(side=tk.LEFT)
+            tk.Label(frame, text=f"{field_name}:", bg="#6EC207", fg="white", font=("Arial", 10)).pack(side=tk.LEFT)
 
-            entry = tk.Entry(frame, 
-                            textvariable=field_var, 
-                            bg="#34495E", 
-                            fg="white", 
-                            width=30)
+            entry = tk.Entry(frame, textvariable=field_var, bg="#34495E", fg="white", width=30)
             entry.pack(side=tk.RIGHT)
-
-            # Disable email field
+            
             if field_name == "Email":
                 entry.config(state='readonly')
 
         def update_profile():
-            # Validate inputs
             for field, var in profile_fields.items():
                 if field != "Email" and not var.get().strip():
                     messagebox.showerror("Error", f"{field} is required")
