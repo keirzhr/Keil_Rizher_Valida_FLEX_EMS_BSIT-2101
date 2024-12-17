@@ -90,7 +90,6 @@ def upload_photo():
             # Save the resized image
             img.save(save_path)
             
-            # Convert save_path to a relative path for database storage
             profile_pic_path = os.path.join("uploads", filename)
 
             print("Original File Path:", file_path)
@@ -216,15 +215,15 @@ flex_ems_path = os.path.join(current_dir, 'flex_ems.py')
 
 def validate_login():
     # Get input from user interface
-    username = user.get().strip()  # Replace with appropriate widget reference
-    password = code.get().strip()  # Replace with appropriate widget reference
+    username = user.get().strip()
+    password = code.get().strip() 
 
     # Validate input
     if not username or username == "Username" or not password or password == "Password":
         messagebox.showwarning("Validation Error", "Please enter a valid username and password.")
         return
 
-    connection = connect_db()  # Ensure this function is defined and connects to your DB
+    connection = connect_db()
     if not connection:
         messagebox.showerror("Database Error", "Unable to connect to the database.")
         return
@@ -236,14 +235,13 @@ def validate_login():
             FROM users 
             WHERE username = %s AND password = %s
         """
-        cursor.execute(query, (username, hash_password(password)))  # Ensure `hash_password` is defined
+        cursor.execute(query, (username, hash_password(password)))
         user_details = cursor.fetchone()
 
         if user_details:
             messagebox.showinfo("Success", f"Welcome, {user_details['full_name']}!")
 
-            # Pass user details to the next script
-            if os.path.exists(flex_ems_path):  # Ensure `flex_ems_path` is defined
+            if os.path.exists(flex_ems_path):
                 subprocess.Popen([sys.executable, flex_ems_path, json.dumps(user_details)])
                 root.destroy()  # Close the current window
             else:
@@ -254,8 +252,7 @@ def validate_login():
         messagebox.showerror("Error", f"Database error: {err}")
     finally:
         connection.close()
-
-
+        
 # Login Section
 def show_login_view():
     global user, code
@@ -388,7 +385,7 @@ def register_user():
             cursor.close()
             connection.close()
 
-#keil
+#register
 def show_register_view():
     global reg_full_name, reg_user, reg_email, reg_phone, reg_pass, photo_label
 
@@ -470,7 +467,7 @@ def show_register_view():
 
     # Photo Preview 
     photo_label = Label(photo_frame, fg="blue", bg='#1A1A19', font=('Arial', 10))
-    photo_label.pack(fill='x', pady=(10, 0))  # Add padding to separate from the button
+    photo_label.pack(fill='x', pady=(10, 0)) 
 
     # Button Frame
     button_frame = Frame(main_container, bg='#1A1A19')
